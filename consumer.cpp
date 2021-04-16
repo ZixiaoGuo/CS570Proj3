@@ -6,11 +6,13 @@ void *consumer(void *ptr) {
     
     while (true) {
         //exit thread if 100th candy already producing
-        if (sem_trywait(belt->candyLeftToProduce) == -1) {
+        if (sem_trywait(belt->candyLeftToConsume) == -1) {
+            cout << "exited thread" << endl;
             pthread_exit(nullptr);
         }
-        sem_wait(belt->mutex);
+
         sem_wait(belt->isBeltEmpty);
+        sem_wait(belt->mutex);
         //TODO: need to wait until there is candy on belt 
 
 

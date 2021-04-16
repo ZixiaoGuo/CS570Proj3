@@ -48,6 +48,7 @@ typedef struct {
     sem_t *limitCandyOnBelt;     // no more than 10 candies on belt
     sem_t *limitFrogBiteOnBelt; //no more than 3 frog bites on belt
     sem_t *isBeltEmpty;     // let consumer wait if there is no candy on belt
+    sem_t *candyLeftToConsume; //exit thread after consumed 100 candies
 
 } BELT_STATUS;
 

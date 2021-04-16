@@ -7,6 +7,7 @@ void * frogProducer(void * ptr) {
     while (true)
     {
         if (sem_trywait(belt->candyLeftToProduce) == -1) {
+            cout << "exited thread" << endl;
             pthread_exit(nullptr);
         }
         sem_wait(belt->limitCandyOnBelt); //no more than 10 candies on belt
@@ -40,6 +41,8 @@ void * escargotProducer(void * ptr) {
     while (true)
     {
         if (sem_trywait(belt->candyLeftToProduce) == -1) {
+            cout << "exited thread" << endl;
+
             pthread_exit(nullptr);
         }
         sem_wait(belt->limitCandyOnBelt); //no more than 10 candies on belt

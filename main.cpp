@@ -15,9 +15,11 @@ int main(int argc, char ** argv) {
     sem_t globalLimitFrogBiteOnBelt;  // no more than 3 CFB on belt
     queue<int> globalBeltContent;
     sem_t globalMutex;
-    sem_t globalCandyLeftToProduce;   // stop if 100 ccandies is produced
+    sem_t globalCandyLeftToProduce;   // stop if 100 candies is produced
     sem_t globalLimitCandyOnBelt;     // no more than 10 candies on belt
     sem_t globalIsBeltEmpty;        // let consumer wait if there is no candy on belt
+    sem_t globalCandyLeftToConsume;   // stop if 100 candies is consumed
+
 
     while ( (option = getopt(argc, argv, "E:L:f:e:")) != -1)
     {
@@ -61,6 +63,7 @@ int main(int argc, char ** argv) {
     sem_init(&globalCandyLeftToProduce, 0, 100);
     sem_init(&globalLimitCandyOnBelt, 0, 10);
     sem_init(&globalIsBeltEmpty, 0, 0);
+    sem_init(&globalCandyLeftToConsume, 0, 100);
 
     //pass parameters to update the parameters struct
     status->frogWaitTime = 100;
@@ -75,12 +78,13 @@ int main(int argc, char ** argv) {
     status->candyLeftToProduce = &globalCandyLeftToProduce;
     status->limitCandyOnBelt = &globalLimitCandyOnBelt;
     status->isBeltEmpty = &globalIsBeltEmpty;
+    status->candyLeftToConsume = &globalCandyLeftToConsume;
 
     //initialize 4 thread for two producers and consumers
     pthread_t escargotThread;
     pthread_t lucyThread;
-    pthread_create(&escargotThread, NULL, escargotProducer, status);
-    pthread_create(&lucyThread, NULL, consumer, status);
+    pthread_create(&escargotThread, NULL, escargotProducer, (void *)status);
+    pthread_create(&lucyThread, NULL, consumer, (void *)status);
     pthread_join(escargotThread,nullptr);
     pthread_join(lucyThread,nullptr);
 
