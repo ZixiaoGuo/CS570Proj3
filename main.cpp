@@ -5,11 +5,11 @@ using namespace std;
 int main(int argc, char ** argv) {
 
     int option;
-    bool bigEFlag = false; // milliseconds N that the Ethel consumer requires to put a candy in the box
-    bool lFlag = false;     // milliseconds N that the Lucy consumer requires to put a candy in the box
+    
     bool fFlag = false;     // milliseconds requiredto produce each crunchy frog bite
     bool smallEFlag = false; // milliseconds required to produceeach everlasting escargot sucker.
-
+    bool bigEFlag = false; // milliseconds N that the Ethel consumer requires to put a candy in the box
+    bool lFlag = false;     // milliseconds N that the Lucy consumer requires to put a candy in the box
     // initialize variables to pass to struct
     int timeEthel, timeLucy, timeFrog, time_escargot = 0;
     sem_t globalLimitFrogBiteOnBelt;  // no more than 3 CFB on belt
@@ -21,10 +21,22 @@ int main(int argc, char ** argv) {
     sem_t globalCandyLeftToConsume;   // stop if 100 candies is consumed
 
 
-    while ( (option = getopt(argc, argv, "E:L:f:e:")) != -1)
+    while ( (option = getopt(argc, argv, "f:e:E:L:")) != -1)
     {
         switch (option)
         {
+            case 'f': /* frog bite, N = number of miliseconds */
+                fFlag = true;
+                timeFrog = atoi(optarg);
+                //printf("frog bites %d\n", frog_N);
+                break;
+            
+            case 'e': /* escargot, N = number of miliseconds */
+                smallEFlag = true;
+                time_escargot = atoi(optarg);
+                //printf("escargot %d\n", escar_N);
+                break;
+
             case 'E': /* Ethel consumer, N = number of miliseconds */
                 bigEFlag = true;
                 timeEthel = atoi(optarg);
@@ -37,17 +49,7 @@ int main(int argc, char ** argv) {
                 //printf("Lucy %d\n", Lucy_N);
                 break;
 
-            case 'f': /* frog bite, N = number of miliseconds */
-                fFlag = true;
-                timeFrog = atoi(optarg);
-                //printf("frog bites %d\n", frog_N);
-                break;
-            
-            case 'e': /* escargot, N = number of miliseconds */
-                smallEFlag = true;
-                time_escargot = atoi(optarg);
-                //printf("escargot %d\n", escar_N);
-                break;
+
         }
     }
 

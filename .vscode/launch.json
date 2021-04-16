@@ -11,7 +11,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/main",
-            "args": [],
+            "args": ["-f", "5", "-e", "15", "-E", "35", "-L", "20"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
