@@ -79,14 +79,19 @@ int main(int argc, char ** argv) {
     status->mutex = &globalMutex;
     status->candyLeftToProduce = &globalCandyLeftToProduce;
     status->limitCandyOnBelt = &globalLimitCandyOnBelt;
+    status->limitFrogBiteOnBelt = &globalLimitFrogBiteOnBelt;
     status->isBeltEmpty = &globalIsBeltEmpty;
     status->candyLeftToConsume = &globalCandyLeftToConsume;
 
     //initialize 4 thread for two producers and consumers
     pthread_t escargotThread;
     pthread_t lucyThread;
+    pthread_t frogThread;
+    pthread_t ethelThread;
+    pthread_create(&frogThread, NULL, frogProducer, (void*)status);
     pthread_create(&escargotThread, NULL, escargotProducer, (void *)status);
     pthread_create(&lucyThread, NULL, consumer, (void *)status);
+    pthread_join(frogThread, nullptr);
     pthread_join(escargotThread,nullptr);
     pthread_join(lucyThread,nullptr);
 

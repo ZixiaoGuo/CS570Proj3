@@ -7,15 +7,17 @@ void * frogProducer(void * ptr) {
     while (true)
     {
         if (sem_trywait(belt->candyLeftToProduce) == -1) {
-            cout << "exited thread" << endl;
+            cout << "exited frog thread" << endl;
             pthread_exit(nullptr);
         }
         sem_wait(belt->limitCandyOnBelt); //no more than 10 candies on belt
         sem_wait(belt->limitFrogBiteOnBelt);
+
+        cout << "frog waiting mutex" << endl;
         sem_wait(belt->mutex);
 
         //add the candies to the belt
-        belt->itemsOnBeltQueue->push(FROG_BITE); //push frog bite(1) to the queue
+        belt->itemsOnBeltQueue->push(FROG_BITE); //push frog bite(0) to the queue
         cout << "added candy " << belt->itemsOnBeltQueue->front() << " size of belt is " << belt->itemsOnBeltQueue->size() << endl;
         belt->totalCandies++;
         cout << "total candies produced is " << belt->totalCandies << endl;
@@ -34,14 +36,14 @@ void * frogProducer(void * ptr) {
 
 }
 
-void * escargotProducer(void * ptr) {
+void * escargotProducer(vogiid * ptr) {
     BELT_STATUS *belt = (BELT_STATUS *) ptr;
 
     
     while (true)
     {
         if (sem_trywait(belt->candyLeftToProduce) == -1) {
-            cout << "exited thread" << endl;
+            cout << "exited escargot thread" << endl;
 
             pthread_exit(nullptr);
         }
