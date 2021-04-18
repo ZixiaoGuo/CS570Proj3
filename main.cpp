@@ -68,10 +68,10 @@ int main(int argc, char ** argv) {
     sem_init(&globalCandyLeftToConsume, 0, 100);
 
     //pass parameters to update the parameters struct
-    status->frogWaitTime = 100;
-    status->escargotWaitTime = 100;
-    status->lucyWaitTime = 100;
-    status->ethelWaitTime = 100;
+    status->frogWaitTime = 300;
+    status->escargotWaitTime = 300;
+    status->lucyWaitTime = 300;
+    status->ethelWaitTime = 300;
     status->itemsOnBeltQueue = &globalBeltContent;
     status->totalCandies = 0;
     status->candies_belt = 0;

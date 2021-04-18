@@ -36,7 +36,7 @@ void * frogProducer(void * ptr) {
 
 }
 
-void * escargotProducer(vogiid * ptr) {
+void * escargotProducer(void * ptr) {
     BELT_STATUS *belt = (BELT_STATUS *) ptr;
 
     
