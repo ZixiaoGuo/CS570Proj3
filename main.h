@@ -12,7 +12,7 @@
 #include <iostream>   
 #include <stdlib.h>  
 #include <getopt.h>  
-//#include "io.h"
+#include "io.h"
 using namespace std;
 
 #define FROG_BITE 0
@@ -31,11 +31,19 @@ typedef struct {
     int lucyWaitTime;
     int ethelWaitTime;
 
+    bool isLucyStarted; //used to determine consumer type
+
+    int candiesOnBelt[2];
+    int candiesProduced[2];
+    int candiesConsumed[2];
+    int *candiesConsumed2DArray[2];
+
+
     //pass pointer of belt
     queue<int> *itemsOnBeltQueue;
 
     int totalCandies;
-    int candies_belt;   
+      
     
     int totalFrogs; // total CFB candies produced
     int frogsOnBelt; //number of frogs on belt
@@ -50,6 +58,7 @@ typedef struct {
     sem_t *limitFrogBiteOnBelt; //no more than 3 frog bites on belt
     sem_t *isBeltEmpty;     // let consumer wait if there is no candy on belt
     sem_t *candyLeftToConsume; //exit thread after consumed 100 candies
+    sem_t *consumerTypeGuard;  // barrier for setting the type of consumer
 
 } BELT_STATUS;
 

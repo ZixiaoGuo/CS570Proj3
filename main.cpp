@@ -19,6 +19,7 @@ int main(int argc, char ** argv) {
     sem_t globalLimitCandyOnBelt;     // no more than 10 candies on belt
     sem_t globalIsBeltEmpty;        // let consumer wait if there is no candy on belt
     sem_t globalCandyLeftToConsume;   // stop if 100 candies is consumed
+    sem_t globalConsumerTypeGuard;  // barrier for setting the type of consumer
 
 
     while ( (option = getopt(argc, argv, "f:e:E:L:")) != -1)
@@ -66,6 +67,7 @@ int main(int argc, char ** argv) {
     sem_init(&globalLimitCandyOnBelt, 0, 10);
     sem_init(&globalIsBeltEmpty, 0, 0);
     sem_init(&globalCandyLeftToConsume, 0, 100);
+    sem_init(&globalConsumerTypeGuard, 0, 1);
 
     //pass parameters to update the parameters struct
     status->frogWaitTime = 300;
@@ -74,7 +76,6 @@ int main(int argc, char ** argv) {
     status->ethelWaitTime = 300;
     status->itemsOnBeltQueue = &globalBeltContent;
     status->totalCandies = 0;
-    status->candies_belt = 0;
     status->totalFrogs, status->frogsOnBelt, status->ethelFrogsConsumed, status->lucyFrogConsumed = 0;
     status->mutex = &globalMutex;
     status->candyLeftToProduce = &globalCandyLeftToProduce;
@@ -82,6 +83,11 @@ int main(int argc, char ** argv) {
     status->limitFrogBiteOnBelt = &globalLimitFrogBiteOnBelt;
     status->isBeltEmpty = &globalIsBeltEmpty;
     status->candyLeftToConsume = &globalCandyLeftToConsume;
+    status->consumerTypeGuard = &globalConsumerTypeGuard;
+
+    status->isLucyStarted = false;
+
+    
 
     //initialize 4 thread for two producers and consumers
     pthread_t escargotThread;
@@ -91,9 +97,13 @@ int main(int argc, char ** argv) {
     pthread_create(&frogThread, NULL, frogProducer, (void*)status);
     pthread_create(&escargotThread, NULL, escargotProducer, (void *)status);
     pthread_create(&lucyThread, NULL, consumer, (void *)status);
+    pthread_create(&ethelThread, NULL, consumer, (void *)status);
+
     pthread_join(frogThread, nullptr);
     pthread_join(escargotThread,nullptr);
     pthread_join(lucyThread,nullptr);
+    pthread_join(ethelThread,nullptr);
+
 
     
 

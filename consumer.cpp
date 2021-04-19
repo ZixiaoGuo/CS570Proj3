@@ -2,7 +2,24 @@
 
 void *consumer(void *ptr) {
 
+    ConsumerType consumer;
+
     BELT_STATUS * belt = (BELT_STATUS*) ptr;
+
+    sem_wait(belt->consumerTypeGuard);
+    if (belt->isLucyStarted == false)
+    {
+        consumer = Lucy;
+        belt->isLucyStarted = true;
+        cout << "setted consumer Lucy" << endl;
+    }
+    
+    else {
+        consumer = Ethel;
+        cout << "setted consumer Ethel" << endl;
+    }
+    sem_post(belt->consumerTypeGuard);
+    
     
     while (true) {
         //exit thread if 100th candy already producing
@@ -36,7 +53,14 @@ void *consumer(void *ptr) {
         sem_post(belt->limitCandyOnBelt);  // add space on the belt since consumed one
 
         // TODO: wait depends on lucy or ethel
-        usleep(1000 * (belt->lucyWaitTime)); //sleep for time specified in args
+        if (consumer == Lucy) {
+            usleep(1000 * (belt->lucyWaitTime)); //sleep for time specified in args
+        }
+
+        else {
+            usleep(1000 * (belt->ethelWaitTime)); //sleep for time specified in args
+        }
+        
         //if(belt->totalCandies == 100) {
         //    break;
         //}
