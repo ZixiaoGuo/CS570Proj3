@@ -2,27 +2,32 @@
 
 void * frogProducer(void * ptr) {
     BELT_STATUS *belt = (BELT_STATUS *) ptr;
-
+    ProductType producer = FrogBite;
     
     while (true)
     {
         if (sem_trywait(belt->candyLeftToProduce) == -1) {
-            cout << "exited frog thread" << endl;
+            //cout << "exited frog thread" << endl;
             pthread_exit(nullptr);
         }
         sem_wait(belt->limitCandyOnBelt); //no more than 10 candies on belt
         sem_wait(belt->limitFrogBiteOnBelt);
 
-        cout << "frog waiting mutex" << endl;
+        //cout << "frog waiting mutex" << endl;
         sem_wait(belt->mutex);
 
         //add the candies to the belt
         belt->itemsOnBeltQueue->push(FROG_BITE); //push frog bite(0) to the queue
-        cout << "added candy " << belt->itemsOnBeltQueue->front() << " size of belt is " << belt->itemsOnBeltQueue->size() << endl;
         belt->totalCandies++;
-        cout << "total candies produced is " << belt->totalCandies << endl;
-        cout << endl;
         //TODO: call io_add_type
+
+        cout << endl;
+        cout << "producedFrogBite" << endl;
+        cout << endl;
+        
+        belt->candiesOnBelt[FrogBite]++;
+        belt->candiesProduced[FrogBite]++;
+        io_add_type(producer, belt->candiesOnBelt, belt->candiesProduced);
 
         sem_post(belt->mutex);
         //sem_post(belt->candyLeftToProduce);
@@ -38,12 +43,13 @@ void * frogProducer(void * ptr) {
 
 void * escargotProducer(void * ptr) {
     BELT_STATUS *belt = (BELT_STATUS *) ptr;
+    ProductType producer = Escargot;
 
     
     while (true)
     {
         if (sem_trywait(belt->candyLeftToProduce) == -1) {
-            cout << "exited escargot thread" << endl;
+            //cout << "exited escargot thread" << endl;
 
             pthread_exit(nullptr);
         }
@@ -52,12 +58,11 @@ void * escargotProducer(void * ptr) {
 
         //add the candies to the belt
         belt->itemsOnBeltQueue->push(ESCARGOT);
-        cout << endl;
-        cout << "added candy " << belt->itemsOnBeltQueue->front() << ", size of belt is " << belt->itemsOnBeltQueue->size() << endl;
         belt->totalCandies++;
-        cout << "total candies produced is " << belt->totalCandies << endl;
-        cout << endl;
         //TODO: call io_add_type
+        belt->candiesOnBelt[Escargot]++;
+        belt->candiesProduced[Escargot]++;
+        io_add_type(producer, belt->candiesOnBelt, belt->candiesProduced);
 
         sem_post(belt->mutex);
         sem_post(belt->isBeltEmpty);

@@ -70,10 +70,10 @@ int main(int argc, char ** argv) {
     sem_init(&globalConsumerTypeGuard, 0, 1);
 
     //pass parameters to update the parameters struct
-    status->frogWaitTime = 300;
-    status->escargotWaitTime = 300;
-    status->lucyWaitTime = 300;
-    status->ethelWaitTime = 300;
+    status->frogWaitTime = timeFrog;
+    status->escargotWaitTime = time_escargot;
+    status->ethelWaitTime = timeEthel;
+    status->lucyWaitTime = timeLucy;
     status->itemsOnBeltQueue = &globalBeltContent;
     status->totalCandies = 0;
     status->totalFrogs, status->frogsOnBelt, status->ethelFrogsConsumed, status->lucyFrogConsumed = 0;
@@ -86,6 +86,14 @@ int main(int argc, char ** argv) {
     status->consumerTypeGuard = &globalConsumerTypeGuard;
 
     status->isLucyStarted = false;
+
+    status->candiesOnBelt[0] = 0;
+    status->candiesOnBelt[1] = 0;
+    status->candiesProduced[0] = 0;
+    status->candiesProduced[1] = 0;
+    status->candiesConsumed[0] = 0;
+    status->candiesConsumed[1] = 0;
+
 
     
 
@@ -106,11 +114,13 @@ int main(int argc, char ** argv) {
 
 
     
-
-
-    
-    //initialize 4 pthreads
-
+    sem_destroy(&globalLimitFrogBiteOnBelt);
+    sem_destroy(&globalMutex);
+    sem_destroy(&globalCandyLeftToProduce);
+    sem_destroy(&globalLimitCandyOnBelt);
+    sem_destroy(&globalIsBeltEmpty);
+    sem_destroy(&globalCandyLeftToConsume);
+    sem_destroy(&globalConsumerTypeGuard);
 
 
 

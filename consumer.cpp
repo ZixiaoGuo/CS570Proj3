@@ -3,6 +3,7 @@
 void *consumer(void *ptr) {
 
     ConsumerType consumer;
+    ProductType itemBeingConsumed;
 
     BELT_STATUS * belt = (BELT_STATUS*) ptr;
 
@@ -11,12 +12,12 @@ void *consumer(void *ptr) {
     {
         consumer = Lucy;
         belt->isLucyStarted = true;
-        cout << "setted consumer Lucy" << endl;
+        //cout << "setted consumer Lucy" << endl;
     }
     
     else {
         consumer = Ethel;
-        cout << "setted consumer Ethel" << endl;
+        //cout << "setted consumer Ethel" << endl;
     }
     sem_post(belt->consumerTypeGuard);
     
@@ -24,7 +25,7 @@ void *consumer(void *ptr) {
     while (true) {
         //exit thread if 100th candy already producing
         if (sem_trywait(belt->candyLeftToConsume) == -1) {
-            cout << "exited thread" << endl;
+            //cout << "exited thread" << endl;
             pthread_exit(nullptr);
         }
 
@@ -35,19 +36,24 @@ void *consumer(void *ptr) {
 
         //remove item from belt
         int candyConsumed;
-        cout << "item count before consume " << belt->itemsOnBeltQueue->size() << endl;
-        cout << "items removed from belt " << belt->itemsOnBeltQueue->front() << endl;
+
 
         if (belt->itemsOnBeltQueue->front() == FROG_BITE) {
             sem_post(belt->limitFrogBiteOnBelt);
+            itemBeingConsumed = FrogBite;
+            belt->candiesOnBelt[itemBeingConsumed]--;
+            belt->candiesConsumed[itemBeingConsumed]++;
         }
+        else {
+            itemBeingConsumed = Escargot;  //consumed EES
+            belt->candiesOnBelt[itemBeingConsumed]--;
+            belt->candiesConsumed[itemBeingConsumed]++;
+        }
+
         belt->itemsOnBeltQueue->pop();
 
-        cout << "item count after remove " << belt->itemsOnBeltQueue->size() << endl;
-        cout << "next item to be remove from belt " << belt->itemsOnBeltQueue->front();
-        cout << endl;
-
         //TODO: call io_remove in io class
+        io_remove_type(consumer, itemBeingConsumed, belt->candiesOnBelt, belt->candiesConsumed);
 
         sem_post(belt->mutex);
         sem_post(belt->limitCandyOnBelt);  // add space on the belt since consumed one
