@@ -27,7 +27,6 @@ void *consumer(void *ptr) {
     while (true) {
         //exit thread if 100th candy already producing
         if (sem_trywait(belt->candyLeftToConsume) == -1) {
-            //cout << "exited thread" << endl;
             pthread_exit(nullptr);
         }
 
@@ -53,31 +52,25 @@ void *consumer(void *ptr) {
             belt->candiesConsumed[itemBeingConsumed]++;
             belt->candiesConsumed2DArray[consumer][itemBeingConsumed]++;
         }
-        cout << "Increamenting 2D array " <<belt->candiesConsumed2DArray[consumer][itemBeingConsumed]<< endl;
 
 
         belt->itemsOnBeltQueue->pop();
 
         //TODO: call io_remove in io class
-        io_remove_type(consumer, itemBeingConsumed, belt->candiesOnBelt, belt->candiesConsumed);
+        io_remove_type(consumer, itemBeingConsumed, belt->candiesOnBelt, belt->candiesConsumed2DArray[consumer]);
 
         sem_post(belt->mutex);
         sem_post(belt->limitCandyOnBelt);  // add space on the belt since consumed one
 
-        // TODO: wait depends on lucy or ethel
         if (consumer == Lucy) {
-            //cout << "global Lucy wait time: ++++++++++++++ " << globalLucyWaitTime << endl;
             usleep(1000 * belt->lucyWaitTime); //sleep for time specified in args
         }
 
         else {
-            //cout << "global Ethel wait time: ++++++++++++++ " << globalEthelWaitTime << endl;
             usleep(1000 * (belt->ethelWaitTime)); //sleep for time specified in args
         }
         
-        //if(belt->totalCandies == 100) {
-        //    break;
-        //}
+
 
     }
 
