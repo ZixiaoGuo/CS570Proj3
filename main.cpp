@@ -1,7 +1,7 @@
 #include "main.h"
 using namespace std;
 
-
+int globalFrogWaitTime, globalEscargotWaitTime, globalLucyWaitTime, globalEthelWaitTime= 0;
 int main(int argc, char ** argv) {
 
     int option;
@@ -29,31 +29,44 @@ int main(int argc, char ** argv) {
             case 'f': /* frog bite, N = number of miliseconds */
                 fFlag = true;
                 timeFrog = atoi(optarg);
-                //printf("frog bites %d\n", frog_N);
                 break;
             
             case 'e': /* escargot, N = number of miliseconds */
                 smallEFlag = true;
                 time_escargot = atoi(optarg);
-                //printf("escargot %d\n", escar_N);
                 break;
 
             case 'E': /* Ethel consumer, N = number of miliseconds */
                 bigEFlag = true;
                 timeEthel = atoi(optarg);
-                //printf("Ethel %d\n", Ethel_N);
+                
                 break;
 
             case 'L': /* Lucy consumer, N = number of miliseconds */
                 lFlag = true;
                 timeLucy = atoi(optarg);
-                //printf("Lucy %d\n", Lucy_N);
+                
                 break;
 
 
         }
     }
-
+    if (fFlag == false) {
+        timeFrog = 0;
+    }
+    if (smallEFlag == false) {
+        time_escargot = 0;
+    }
+    if (bigEFlag == false) {
+        timeEthel = 0;
+    }
+    if (lFlag == false) {
+        timeLucy = 0;
+    }
+    //cout << "Args Frog Wait time ============" << timeFrog << endl;
+    //cout << "Args Escargot Wait time ============"<< time_escargot << endl;
+    //cout << "Args Ethel Wait time ============"<< timeEthel << endl;
+    //cout << "Args Lucy Wait time ============"<< timeLucy << endl;
     //these variables only used to set parameters, will not use globally
 
 
@@ -71,9 +84,17 @@ int main(int argc, char ** argv) {
 
     //pass parameters to update the parameters struct
     status->frogWaitTime = timeFrog;
+    globalFrogWaitTime = timeFrog;
+
     status->escargotWaitTime = time_escargot;
+    globalEscargotWaitTime= time_escargot;
+
     status->ethelWaitTime = timeEthel;
+    globalEthelWaitTime = timeEthel;
+
     status->lucyWaitTime = timeLucy;
+    globalLucyWaitTime = timeLucy;
+
     status->itemsOnBeltQueue = &globalBeltContent;
     status->totalCandies = 0;
     status->totalFrogs, status->frogsOnBelt, status->ethelFrogsConsumed, status->lucyFrogConsumed = 0;
@@ -94,6 +115,10 @@ int main(int argc, char ** argv) {
     status->candiesConsumed[0] = 0;
     status->candiesConsumed[1] = 0;
 
+    status->candiesConsumed2DArray[0] = new int [2];
+    status->candiesConsumed2DArray[1] = new int [2];
+
+
 
     
 
@@ -112,7 +137,7 @@ int main(int argc, char ** argv) {
     pthread_join(lucyThread,nullptr);
     pthread_join(ethelThread,nullptr);
 
-
+    io_production_report(status->candiesProduced, status->candiesConsumed2DArray);
     
     sem_destroy(&globalLimitFrogBiteOnBelt);
     sem_destroy(&globalMutex);

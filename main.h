@@ -68,6 +68,12 @@ void *consumer(void *ptr);
 void *escargotProducer(void *ptr);
 void *frogProducer(void *ptr);
 
+//-------experimental code-----------
+extern int globalFrogWaitTime;
+extern int globalEscargotWaitTime;
+extern int globalLucyWaitTime;
+extern int globalEthelWaitTime;
+
 
 
 #endif

@@ -2,6 +2,8 @@
 
 void *consumer(void *ptr) {
 
+    //cout << "this is global var Lucy wait time: " << globalLucyWaitTime << endl;
+
     ConsumerType consumer;
     ProductType itemBeingConsumed;
 
@@ -43,12 +45,16 @@ void *consumer(void *ptr) {
             itemBeingConsumed = FrogBite;
             belt->candiesOnBelt[itemBeingConsumed]--;
             belt->candiesConsumed[itemBeingConsumed]++;
+            belt->candiesConsumed2DArray[consumer][itemBeingConsumed]++;
         }
         else {
             itemBeingConsumed = Escargot;  //consumed EES
             belt->candiesOnBelt[itemBeingConsumed]--;
             belt->candiesConsumed[itemBeingConsumed]++;
+            belt->candiesConsumed2DArray[consumer][itemBeingConsumed]++;
         }
+        cout << "Increamenting 2D array " <<belt->candiesConsumed2DArray[consumer][itemBeingConsumed]<< endl;
+
 
         belt->itemsOnBeltQueue->pop();
 
@@ -60,10 +66,12 @@ void *consumer(void *ptr) {
 
         // TODO: wait depends on lucy or ethel
         if (consumer == Lucy) {
-            usleep(1000 * (belt->lucyWaitTime)); //sleep for time specified in args
+            //cout << "global Lucy wait time: ++++++++++++++ " << globalLucyWaitTime << endl;
+            usleep(1000 * belt->lucyWaitTime); //sleep for time specified in args
         }
 
         else {
+            //cout << "global Ethel wait time: ++++++++++++++ " << globalEthelWaitTime << endl;
             usleep(1000 * (belt->ethelWaitTime)); //sleep for time specified in args
         }
         

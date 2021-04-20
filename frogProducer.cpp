@@ -10,6 +10,8 @@ void * frogProducer(void * ptr) {
             //cout << "exited frog thread" << endl;
             pthread_exit(nullptr);
         }
+        //cout << "global Frog wait time: ++++++++++++++ " << globalFrogWaitTime << endl;
+
         sem_wait(belt->limitCandyOnBelt); //no more than 10 candies on belt
         sem_wait(belt->limitFrogBiteOnBelt);
 
@@ -21,18 +23,17 @@ void * frogProducer(void * ptr) {
         belt->totalCandies++;
         //TODO: call io_add_type
 
-        cout << endl;
-        cout << "producedFrogBite" << endl;
-        cout << endl;
+        //cout << endl;
+        //cout << "producedFrogBite" << endl;
+        //cout << endl;
         
         belt->candiesOnBelt[FrogBite]++;
         belt->candiesProduced[FrogBite]++;
         io_add_type(producer, belt->candiesOnBelt, belt->candiesProduced);
 
         sem_post(belt->mutex);
-        //sem_post(belt->candyLeftToProduce);
         sem_post(belt->isBeltEmpty);
-        usleep(1000 * (belt->frogWaitTime)); //sleep for time specified in args
+        usleep(1000 * belt->frogWaitTime); //sleep for time specified in args
 
         //if total candies = 100 break
     }
@@ -66,7 +67,7 @@ void * escargotProducer(void * ptr) {
 
         sem_post(belt->mutex);
         sem_post(belt->isBeltEmpty);
-        usleep(1000 * (belt->escargotWaitTime)); //sleep for time specified in args
+        usleep(1000 * belt->escargotWaitTime); //sleep for time specified in args
 
         //if total candies = 100 break
     }
